@@ -14,6 +14,10 @@ public class PlayerController : MonoBehaviour {
 
     private bool facingRight = true;
     private bool running = false;
+
+    private float xInput;
+    private float speed;
+
 	// Use this for initialization
 	void Start () {
         _Animator = GetComponent<Animator>();
@@ -21,19 +25,51 @@ public class PlayerController : MonoBehaviour {
 	
     void Update()
     {
-        float xInput = Input.GetAxis("Horizontal");
+        GetInput();
+        MoveCharacter();
+        CheckBounds();
+        UpdateAnimator();
+        CheckFacingDirection();
+        AlignToGround();
+    }
 
+    private void GetInput()
+    {
+        xInput = Input.GetAxis("Horizontal");
         running = Input.GetButton("Jump");
+        speed = running ? RunSpeed : WalkSpeed;
+    }
 
-        float speed = running ? RunSpeed : WalkSpeed;
-
+    private void MoveCharacter()
+    {
         transform.Translate(Vector3.right * xInput * speed * Time.deltaTime);
+    }
 
+    private void CheckBounds()
+    {
+        //TODO: doesn't account for aspect ratio
         if (transform.position.x < 7f) transform.position = new Vector3(7f, transform.position.y, transform.position.z);
+        if (transform.position.x > 93f) transform.position = new Vector3(93f, transform.position.y, transform.position.z);
+    }
 
+    private void UpdateAnimator()
+    {
         _Animator.SetFloat("Speed", Mathf.Abs(xInput * speed * Time.deltaTime));
         _Animator.SetBool("Running", running);
+    }
 
+    private void AlignToGround()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + transform.up * 0.3f + transform.forward, -transform.up, out hit, 10f))
+        {
+            transform.up = hit.normal;
+            transform.position = hit.point + transform.up * spriteHeight - transform.forward;
+        }
+    }
+
+    private void CheckFacingDirection()
+    {
         if (facingRight && xInput < 0)
         {
             transform.localScale = FACE_LEFT;
@@ -43,13 +79,6 @@ public class PlayerController : MonoBehaviour {
         {
             transform.localScale = FACE_RIGHT;
             facingRight = true;
-        }
-        //use raycasts to keep the player grounded
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position + transform.up*0.3f, -transform.up, out hit ,10f))
-        {
-            transform.up = hit.normal;
-            transform.position = hit.point + transform.up*spriteHeight;
         }
     }
 }

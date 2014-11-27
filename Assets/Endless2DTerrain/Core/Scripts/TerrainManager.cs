@@ -206,7 +206,6 @@ namespace Endless2DTerrain
         private void MoveMeshesForCornerPiece(TerrainPiece currentTerrain, TerrainPiece nextTerrain, Vector3 origin)
         {
             //Because of the rotations these can overlap.  So get the difference, then add our spacing for the corners
-            //TODO: Revisit this, I don't think it is working quite right
             float maxXPrevious = currentTerrain.FrontMesh.RotatedPlaneVerticies.Select(p => p.x).Max();
             float minXCurrent = nextTerrain.FrontMesh.RotatedPlaneVerticies.Select(p => p.x).Min();
             float diff = Math.Abs(maxXPrevious - minXCurrent);
