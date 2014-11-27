@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour {
         GetInput();
         MoveCharacter();
         CheckBounds();
-        UpdateAnimator();
+        UpdateAnimatorValues();
         CheckFacingDirection();
         AlignToGround();
     }
@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour {
         if (transform.position.x > 93f) transform.position = new Vector3(93f, transform.position.y, transform.position.z);
     }
 
-    private void UpdateAnimator()
+    private void UpdateAnimatorValues()
     {
         _Animator.SetFloat("Speed", Mathf.Abs(xInput * MoveSpeed * Time.deltaTime));
         _Animator.SetBool("Running", running);
@@ -63,7 +63,6 @@ public class PlayerMovement : MonoBehaviour {
          *       When we set the position of the sprite, we adjust the hit.point value by this offset once again in order to keep the sprite
          *       at the same z level.
          */
-
         RaycastHit hit;
         if (Physics.Raycast(transform.position + transform.up * 0.3f + transform.forward, -transform.up, out hit, 100f))
         {
