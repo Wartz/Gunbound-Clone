@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour {
 
         transform.Translate(Vector3.right * xInput * speed * Time.deltaTime);
 
+        if (transform.position.x < 7f) transform.position = new Vector3(7f, transform.position.y, transform.position.z);
+
         _Animator.SetFloat("Speed", Mathf.Abs(xInput * speed * Time.deltaTime));
         _Animator.SetBool("Running", running);
 
